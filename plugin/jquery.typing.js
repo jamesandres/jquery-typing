@@ -1,6 +1,6 @@
 // jQuery-typing
 //
-// Version: 0.1.0
+// Version: 0.2.0
 // Website: http://narf.pl/jquery-typing/
 // License: public domain <http://unlicense.org/>
 // Author:  Maciej Konieczny <hello@narf.pl>
@@ -36,12 +36,12 @@
             delayedCallback;
 
         // react to keypresses
-        function reactToKeypress() {
+        function reactToKeypress(event) {
             if (!typing) {
                 // set flag and run callback
                 typing = true;
                 if (settings.start) {
-                    settings.start();
+                    settings.start.call(this, event);
                 }
             }
         }
@@ -52,12 +52,12 @@
         // listen to backspace and delete presses
         $elem.keydown(function (event) {
             if (event.keyCode === 8 || event.keyCode === 46) {
-                reactToKeypress();
+                reactToKeypress.call(elem, event);
             }
         });
 
         // listen to keyup events
-        $elem.keyup(function () {
+        $elem.keyup(function (event) {
             if (typing) {
                 // discard previous delayed callback and create new one
                 clearTimeout(delayedCallback);
@@ -65,7 +65,7 @@
                     // set flag and run callback
                     typing = false;
                     if (settings.stop) {
-                        settings.stop();
+                        settings.stop.call(elem, event);
                     }
                 }, settings.delay);
             }
